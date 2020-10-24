@@ -214,11 +214,11 @@ public:
     void addCompilerFlagScheme (const String&);
     void removeCompilerFlagScheme (const String&);
 
-    String getPostExportShellCommandPosixString() const     { return postExportShellCommandPosixValue.get(); }
-    String getPostExportShellCommandWinString() const       { return postExportShellCommandWinValue.get(); }
+    String getPostExportShellCommandPosixString() const  { return postExportShellCommandPosixValue.get(); }
+    String getPostExportShellCommandWinString() const    { return postExportShellCommandWinValue.get(); }
 
-    bool shouldUseAppConfig() const                   { return useAppConfigValue.get(); }
-    bool shouldAddUsingNamespaceToJuceHeader() const  { return addUsingNamespaceToJuceHeader.get(); }
+    bool shouldUseAppConfig() const                      { return useAppConfigValue.get(); }
+    bool shouldAddUsingNamespaceToJuceHeader() const     { return addUsingNamespaceToJuceHeader.get(); }
 
     //==============================================================================
     String getPluginNameString() const                { return pluginNameValue.get(); }
@@ -310,8 +310,7 @@ public:
     bool isVST3PluginHost();
 
     //==============================================================================
-    bool shouldBuildTargetType (
-        build_tools::ProjectType::Target::Type targetType) const noexcept;
+    bool shouldBuildTargetType (build_tools::ProjectType::Target::Type targetType) const noexcept;
     static build_tools::ProjectType::Target::Type getTargetTypeFromFilePath (const File& file, bool returnSharedTargetIfNoValidSuffix);
 
     //==============================================================================
@@ -341,6 +340,7 @@ public:
         bool isGroup() const;
         bool isMainGroup() const;
         bool isImageFile() const;
+        bool isSourceFile() const;
 
         String getID() const;
         void setID (const String& newID);
@@ -374,6 +374,9 @@ public:
         bool shouldInhibitWarnings() const;
 
         bool isModuleCode() const;
+
+        Value getShouldSkipPCHValue();
+        bool shouldSkipPCH() const;
 
         Value getCompilerFlagSchemeValue();
         String getCompilerFlagSchemeString() const;
@@ -475,7 +478,9 @@ public:
 
     //==============================================================================
     bool updateCachedFileState();
-    void writeProjectFile();
+    String getCachedFileStateContent() const noexcept  { return cachedFileState.second; }
+
+    String serialiseProjectXml (std::unique_ptr<XmlElement>) const;
 
     //==============================================================================
     String getUniqueTargetFolderSuffixForExporter (const Identifier& exporterIdentifier, const String& baseTargetFolder);
@@ -500,6 +505,7 @@ public:
 
     //==============================================================================
     bool hasIncompatibleLicenseTypeAndSplashScreenSetting() const;
+    bool isFileModificationCheckPending() const;
     bool isSaveAndExportDisabled() const;
 
 private:
@@ -513,6 +519,7 @@ private:
     struct ProjectFileModificationPoller  : private Timer
     {
         ProjectFileModificationPoller (Project& p);
+        bool isCheckPending() const noexcept  { return pending; }
 
     private:
         void timerCallback() override;
@@ -522,7 +529,7 @@ private:
         void reloadProjectFromDisk();
 
         Project& project;
-        bool showingWarning = false;
+        bool pending = false;
     };
 
     //==============================================================================
@@ -566,7 +573,6 @@ private:
     std::pair<Time, String> cachedFileState;
 
     void saveAndMoveTemporaryProject (bool openInIDE);
-    String serialiseProjectXml (std::unique_ptr<XmlElement>) const;
 
     //==============================================================================
     friend class Item;

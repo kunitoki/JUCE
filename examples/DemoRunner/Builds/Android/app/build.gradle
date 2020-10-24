@@ -18,7 +18,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.juce.demorunner"
+        applicationId "com.rmsl.juce.demorunner"
         minSdkVersion    23
         targetSdkVersion 28
         externalNativeBuild {
@@ -47,7 +47,7 @@ android {
     productFlavors {
         debug_ {
             ndk {
-                abiFilters "armeabi-v7a", "x86"
+                abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
             }
             externalNativeBuild {
                 cmake {

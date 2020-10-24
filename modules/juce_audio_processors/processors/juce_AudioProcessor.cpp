@@ -1545,7 +1545,7 @@ StringArray AudioProcessorParameter::getAllValueStrings() const
         auto maxIndex = getNumSteps() - 1;
 
         for (int i = 0; i < getNumSteps(); ++i)
-            valueStrings.add (getText ((float) i / maxIndex, 1024));
+            valueStrings.add (getText ((float) i / (float) maxIndex, 1024));
     }
 
     return valueStrings;
@@ -1561,37 +1561,6 @@ void AudioProcessorParameter::removeListener (AudioProcessorParameter::Listener*
 {
     const ScopedLock sl (listenerLock);
     listeners.removeFirstMatchingValue (listenerToRemove);
-}
-
-//==============================================================================
-bool AudioPlayHead::CurrentPositionInfo::operator== (const CurrentPositionInfo& other) const noexcept
-{
-    return timeInSamples == other.timeInSamples
-        && ppqPosition == other.ppqPosition
-        && editOriginTime == other.editOriginTime
-        && ppqPositionOfLastBarStart == other.ppqPositionOfLastBarStart
-        && frameRate == other.frameRate
-        && isPlaying == other.isPlaying
-        && isRecording == other.isRecording
-        && bpm == other.bpm
-        && timeSigNumerator == other.timeSigNumerator
-        && timeSigDenominator == other.timeSigDenominator
-        && ppqLoopStart == other.ppqLoopStart
-        && ppqLoopEnd == other.ppqLoopEnd
-        && isLooping == other.isLooping;
-}
-
-bool AudioPlayHead::CurrentPositionInfo::operator!= (const CurrentPositionInfo& other) const noexcept
-{
-    return ! operator== (other);
-}
-
-void AudioPlayHead::CurrentPositionInfo::resetToDefault()
-{
-    zerostruct (*this);
-    timeSigNumerator = 4;
-    timeSigDenominator = 4;
-    bpm = 120;
 }
 
 } // namespace juce

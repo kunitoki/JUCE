@@ -2945,8 +2945,8 @@ public:
 
         if (pluginRespondsToDPIChanges)
             dispatch (Vst2::effVendorSpecific,
-                      JUCE_MULTICHAR_CONSTANT ('P', 'r', 'e', 'S'),
-                      JUCE_MULTICHAR_CONSTANT ('A', 'e', 'C', 's'),
+                      (int) ByteOrder::bigEndianInt ("PreS"),
+                      (int) ByteOrder::bigEndianInt ("AeCs"),
                       nullptr, nativeScaleFactor);
     }
    #endif
@@ -3637,7 +3637,6 @@ FileSearchPath VSTPluginFormat::getDefaultLocationsToSearch()
     FileSearchPath paths;
     paths.add (WindowsRegistry::getValue ("HKEY_LOCAL_MACHINE\\Software\\VST\\VSTPluginsPath"));
     paths.addIfNotAlreadyThere (programFiles + "\\Steinberg\\VstPlugins");
-    paths.removeNonExistentPaths();
     paths.addIfNotAlreadyThere (programFiles + "\\VstPlugins");
     paths.removeRedundantPaths();
     return paths;

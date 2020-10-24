@@ -87,11 +87,11 @@ public:
 
     void clicked() override
     {
-        auto* colourSelector = new ColourSelector (ColourSelector::showAlphaChannel
-                                                   | ColourSelector::showColourAtTop
-                                                   | ColourSelector::editableColour
-                                                   | ColourSelector::showSliders
-                                                   | ColourSelector::showColourspace);
+        auto colourSelector = std::make_unique<ColourSelector> (ColourSelector::showAlphaChannel
+                                                                | ColourSelector::showColourAtTop
+                                                                | ColourSelector::editableColour
+                                                                | ColourSelector::showSliders
+                                                                | ColourSelector::showColourspace);
 
         colourSelector->setName ("background");
         colourSelector->setCurrentColour (findColour (TextButton::buttonColourId));
@@ -99,7 +99,7 @@ public:
         colourSelector->setColour (ColourSelector::backgroundColourId, Colours::transparentBlack);
         colourSelector->setSize (300, 400);
 
-        CallOutBox::launchAsynchronously (colourSelector, getScreenBounds(), nullptr);
+        CallOutBox::launchAsynchronously (std::move (colourSelector), getScreenBounds(), nullptr);
     }
 
     using TextButton::clicked;
@@ -1106,7 +1106,7 @@ private:
                 g.fillAll (Colours::lightblue);
 
             g.setColour (LookAndFeel::getDefaultLookAndFeel().findColour (Label::textColourId));
-            g.setFont (height * 0.7f);
+            g.setFont ((float) height * 0.7f);
 
             g.drawText ("Draggable Thing #" + String (rowNumber + 1),
                         5, 0, width, height,
